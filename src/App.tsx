@@ -4,6 +4,10 @@ import OnboardingScreen from './components/OnboardingScreen'
 import SliderScreen from './components/SliderScreen'
 import FinalScreen from './components/FinalScreen'
 import HomePage from './components/HomePage'
+import NewInvoicePage from './components/NewInvoicePage'
+import InvoiceDetailPage from './components/InvoiceDetailPage'
+import InvoiceSharePage from './components/InvoiceSharePage'
+import { Invoice, NewInvoicePayload } from './types'
 import { onboardingScreens } from './data/onboardingData'
 import './App.css'
 const liberteImage = '/liberte.png';
@@ -18,14 +22,22 @@ function App() {
   const [currentScreenIndex, setCurrentScreenIndex] = useState<number>(-1) // -1 = home screen
   const [walletData, setWalletData] = useState<WalletData | null>(null)
   const [bitcoinPercentage, setBitcoinPercentage] = useState<number>(50)
+  const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [path, setPath] = useState<string>(typeof window !== 'undefined' ? window.location.pathname : '/')
 
   // Check localStorage on mount
   useEffect(() => {
     const savedWalletData = localStorage.getItem('liberte-wallet')
+    const savedInvoices = localStorage.getItem('liberte-invoices')
     if (savedWalletData) {
       const parsed = JSON.parse(savedWalletData)
       setWalletData(parsed)
       setCurrentScreenIndex(-2) // -2 = homepage
+    }
+    if (savedInvoices) {
+      try {
+        setInvoices(JSON.parse(savedInvoices))
+      } catch {}
     }
   }, [])
 
@@ -61,6 +73,40 @@ function App() {
     setBitcoinPercentage(percentage)
   }
 
+  const navigateTo = (nextPath: string) => {
+    try {
+      window.history.pushState({}, '', nextPath)
+      setPath(nextPath)
+    } catch {
+      setPath(nextPath)
+    }
+  }
+  const navigateHome = () => navigateTo('/')
+  const navigateNewInvoice = () => navigateTo('/invoice/new')
+
+  useEffect(() => {
+    const onPop = () => setPath(window.location.pathname)
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
+  const handleCreateInvoice = (payload: NewInvoicePayload) => {
+    const uuid = (typeof crypto !== 'undefined' && (crypto as any).randomUUID) ? (crypto as any).randomUUID() : `inv_${Date.now()}`
+    const invoice: Invoice = {
+      id: uuid,
+      clientName: payload.clientName,
+      amountUsd: payload.amountUsd,
+      dateDue: payload.dateDue,
+      description: payload.description,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    }
+    const next = [invoice, ...invoices]
+    setInvoices(next)
+    localStorage.setItem('liberte-invoices', JSON.stringify(next))
+    navigateTo(`/invoice/${invoice.id}`)
+  }
+
   // Create screen data with proper handlers
   const currentScreenData = useMemo(() => {
     if (currentScreenIndex < 0 || currentScreenIndex > 3) return null
@@ -79,12 +125,53 @@ function App() {
     }
   }, [currentScreenIndex])
 
-  // Show homepage if wallet is created
+  // Helper to find invoice by id
+  const findInvoice = (id: string | undefined): Invoice | null => {
+    if (!id) return null
+    const local = JSON.parse(localStorage.getItem('liberte-invoices') || '[]') as Invoice[]
+    const mem = invoices.length ? invoices : local
+    return mem.find(i => i.id === id) || null
+  }
+
+  // URL-based UI once wallet exists (no external router)
   if (currentScreenIndex === -2 && walletData) {
+    // Match routes
+    const matchNew = path === '/invoice/new'
+    const shareMatch = path.match(/^\/invoice\/([^/]+)\/share$/)
+    const detailMatch = path.match(/^\/invoice\/([^/]+)$/)
+    if (matchNew) {
+      return (
+        <NewInvoicePage 
+          onCreateInvoice={handleCreateInvoice}
+          onCancel={navigateHome}
+        />
+      )
+    }
+    if (shareMatch) {
+      const id = shareMatch[1]
+      return (
+        <InvoiceSharePage 
+          invoice={findInvoice(id)}
+          onBack={(backId) => navigateTo(`/invoice/${backId}`)}
+        />
+      )
+    }
+    if (detailMatch) {
+      const id = detailMatch[1]
+      return (
+        <InvoiceDetailPage 
+          invoice={findInvoice(id)}
+          onBack={navigateHome}
+          onShare={(shareId) => navigateTo(`/invoice/${shareId}/share`)}
+        />
+      )
+    }
     return (
       <HomePage
         username={walletData.username}
         bitcoinPercentage={walletData.bitcoinPercentage}
+        hasInvoices={invoices.length > 0}
+        onNewInvoice={navigateNewInvoice}
       />
     )
   }

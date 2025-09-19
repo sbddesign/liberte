@@ -4,9 +4,11 @@ import { BuiButtonReact as BuiButton, BuiMoneyValueReact as BuiMoneyValue, BuiBi
 interface HomePageProps {
   username: string
   bitcoinPercentage: number
+  hasInvoices?: boolean
+  onNewInvoice?: () => void
 }
 
-export default function HomePage({ username, bitcoinPercentage }: HomePageProps) {
+export default function HomePage({ username, bitcoinPercentage, hasInvoices, onNewInvoice }: HomePageProps) {
   return (
     <div 
       className="bg-[var(--background-primary)] flex flex-col items-start justify-start p-9 gap-9 h-full"
@@ -56,6 +58,7 @@ export default function HomePage({ username, bitcoinPercentage }: HomePageProps)
             styleType="outline"
             size="large"
             wide
+            onClick={onNewInvoice}
           />
           <BuiButton 
             label="My Wallet"
@@ -96,21 +99,24 @@ export default function HomePage({ username, bitcoinPercentage }: HomePageProps)
       </div>
       
       {/* Call to Action Section */}
-      <div className="flex flex-col gap-4 items-center justify-center px-0 py-12 shrink-0 w-full h-[480px]">
-        <div className="text-white text-xl font-normal leading-normal text-center shrink-0 w-full">
-          <p>
-            Send your clients an
-            <br />
-            invoice to start receiving!
-          </p>
+      {!hasInvoices && (
+        <div className="flex flex-col gap-4 items-center justify-center px-0 py-12 shrink-0 w-full h-[480px]">
+          <div className="text-white text-xl font-normal leading-normal text-center shrink-0 w-full">
+            <p>
+              Send your clients an
+              <br />
+              invoice to start receiving!
+            </p>
+          </div>
+          <BuiButton 
+            label="Create First Invoice"
+            styleType="filled"
+            size="large"
+            wide
+            onClick={onNewInvoice}
+          />
         </div>
-        <BuiButton 
-          label="Create First Invoice"
-          styleType="filled"
-          size="large"
-          wide
-        />
-      </div>
+      )}
     </div>
   )
 }
