@@ -63,7 +63,7 @@ function App() {
 
   // Create screen data with proper handlers
   const currentScreenData = useMemo(() => {
-    if (currentScreenIndex === -1 || currentScreenIndex >= 5) return null
+    if (currentScreenIndex < 0 || currentScreenIndex > 3) return null
     
     const screen = onboardingScreens[currentScreenIndex]
     return {
