@@ -74,7 +74,7 @@ export default function SliderScreen({ onBack, onBegin, activeDotIndex, totalDot
           onClick={onBack}
         />
         <BuiButton 
-          label="Begin"
+          label="Continue"
           styleType="filled"
           size="large"
           onClick={onBegin}

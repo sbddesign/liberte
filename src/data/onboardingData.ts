@@ -62,7 +62,7 @@ export const onboardingScreens: OnboardingScreenData[] = [
     image: '', // No image for slider screen
     text: 'How much do you want to save?',
     primaryButton: {
-      label: 'Begin',
+      label: 'Continue',
       action: () => {} // Will be set dynamically
     },
     secondaryButton: {
@@ -70,6 +70,21 @@ export const onboardingScreens: OnboardingScreenData[] = [
       action: () => {} // Will be set dynamically
     },
     activeDotIndex: 4,
+    totalDots: 6
+  },
+  {
+    id: 'screen6',
+    image: '', // No image for final screen
+    text: 'What is your name?',
+    primaryButton: {
+      label: 'Continue',
+      action: () => {} // Will be set dynamically
+    },
+    secondaryButton: {
+      label: 'Back',
+      action: () => {} // Will be set dynamically
+    },
+    activeDotIndex: 5,
     totalDots: 6
   }
 ]

@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { BuiButtonReact as BuiButton } from '@sbddesign/bui-ui/react'
 import OnboardingScreen from './components/OnboardingScreen'
 import SliderScreen from './components/SliderScreen'
+import FinalScreen from './components/FinalScreen'
 import { onboardingScreens } from './data/onboardingData'
 import './App.css'
 const liberteImage = '/liberte.png';
@@ -39,7 +40,7 @@ function App() {
       ...screen,
       primaryButton: {
         ...screen.primaryButton,
-        action: screen.id === 'screen5' ? handleBegin : handleContinue
+        action: screen.id === 'screen6' ? handleBegin : handleContinue
       },
       secondaryButton: screen.secondaryButton ? {
         ...screen.secondaryButton,
@@ -53,8 +54,20 @@ function App() {
     return (
       <SliderScreen
         onBack={handleBack}
-        onBegin={handleBegin}
+        onBegin={handleContinue}
         activeDotIndex={4}
+        totalDots={6}
+      />
+    )
+  }
+
+  // Show final screen for screen 6
+  if (currentScreenIndex === 5) {
+    return (
+      <FinalScreen
+        onBack={handleBack}
+        onBegin={handleBegin}
+        activeDotIndex={5}
         totalDots={6}
       />
     )
