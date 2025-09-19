@@ -47,7 +47,7 @@ export const onboardingScreens: OnboardingScreenData[] = [
     image: '/lion.png',
     text: 'Choose a savings plan to automatically invest in bitcoin.',
     primaryButton: {
-      label: 'Begin',
+      label: 'Continue',
       action: () => {} // Will be set dynamically
     },
     secondaryButton: {
@@ -55,6 +55,21 @@ export const onboardingScreens: OnboardingScreenData[] = [
       action: () => {} // Will be set dynamically
     },
     activeDotIndex: 3,
+    totalDots: 6
+  },
+  {
+    id: 'screen5',
+    image: '', // No image for slider screen
+    text: 'How much do you want to save?',
+    primaryButton: {
+      label: 'Begin',
+      action: () => {} // Will be set dynamically
+    },
+    secondaryButton: {
+      label: 'Back',
+      action: () => {} // Will be set dynamically
+    },
+    activeDotIndex: 4,
     totalDots: 6
   }
 ]
