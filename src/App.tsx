@@ -1,28 +1,28 @@
-import { useState } from 'react'
+import React from 'react'
+import { BuiButtonReact as BuiButton } from '@sbddesign/bui-ui/react'
+import ArtAndLogo from './components/ArtAndLogo'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Liberté</h1>
-        <p>A modern React application built with Vite and TypeScript</p>
-        
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test HMR
-          </p>
-        </div>
-        
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
-      </header>
+    <div className="freedom-home">
+      <ArtAndLogo />
+      <div className="buttons-container">
+        <BuiButton 
+          label="Get Started"
+          styleType="filled"
+          data-name="Button" 
+          data-node-id="7241:7340"
+          className="get-started-button"
+        />
+        <BuiButton 
+          label="Restore wallet"
+          styleType="outline"
+          data-name="Button" 
+          data-node-id="7241:7341"
+          className="restore-wallet-button"
+        />
+      </div>
     </div>
   )
 }
