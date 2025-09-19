@@ -4,15 +4,18 @@ import { BuiButtonReact as BuiButton, BuiOptionDotReact as BuiOptionDot } from '
 interface SliderScreenProps {
   onBack: () => void
   onBegin: () => void
+  onBitcoinPercentageChange: (percentage: number) => void
   activeDotIndex: number
   totalDots: number
 }
 
-export default function SliderScreen({ onBack, onBegin, activeDotIndex, totalDots }: SliderScreenProps) {
+export default function SliderScreen({ onBack, onBegin, onBitcoinPercentageChange, activeDotIndex, totalDots }: SliderScreenProps) {
   const [percentage, setPercentage] = useState(50)
 
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPercentage(parseInt(event.target.value))
+    const newPercentage = parseInt(event.target.value)
+    setPercentage(newPercentage)
+    onBitcoinPercentageChange(newPercentage)
   }
 
   return (

@@ -1,23 +1,23 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { BuiButtonReact as BuiButton, BuiOptionDotReact as BuiOptionDot, BuiInputReact as BuiInput } from '@sbddesign/bui-ui/react'
 
 interface FinalScreenProps {
   onBack: () => void
-  onBegin: () => void
+  onBegin: (username: string) => void
   activeDotIndex: number
   totalDots: number
 }
 
 export default function FinalScreen({ onBack, onBegin, activeDotIndex, totalDots }: FinalScreenProps) {
-  const [name, setName] = useState('test') // Start with test value for debugging
+  const [name, setName] = useState('')
 
   const handleNameChange = (value: string) => {
-    console.log('Name changed:', value) // Debug log
+    console.log('Name changed to:', value)
     setName(value)
   }
 
-  // Debug: Log current name value
-  console.log('Current name:', name, 'Length:', name.trim().length)
+  // Debug: Log current state
+  console.log('Current name:', name, 'Length:', name.trim().length, 'Show address:', name.trim().length > 0)
 
   const generatePaymentAddress = (userName: string) => {
     // Simple address generation - in real app this would be more sophisticated
@@ -47,18 +47,21 @@ export default function FinalScreen({ onBack, onBegin, activeDotIndex, totalDots
             onInput={(e: any) => handleNameChange(e.target.value)}
             size="large"
             label="Your Name"
-            wide
+            wide="true"
           />
         </div>
         
-        {/* Payment Address Display - Always visible for debugging */}
-
-        <p className="text-2xl text-center">
-        Your payment address will be{' '}
-        <span style={{ color: 'var(--text-secondary)' }}>
-            {generatePaymentAddress(name)}
-        </span>
-        </p>
+        {/* Payment Address Display */}
+        {name.trim().length > 0 && (
+          <div className="text-center text-white text-2xl font-normal leading-normal shrink-0 w-full">
+            <p>
+              Your payment address will be{' '}
+              <span style={{ color: 'var(--text-secondary)' }}>
+                {generatePaymentAddress(name)}
+              </span>
+            </p>
+          </div>
+        )}
       </div>
       
       {/* Buttons */}
@@ -73,7 +76,7 @@ export default function FinalScreen({ onBack, onBegin, activeDotIndex, totalDots
           label="Begin"
           styleType="filled"
           size="large"
-          onClick={onBegin}
+          onClick={() => onBegin(name.trim())}
           disabled={!name.trim()}
         />
       </div>

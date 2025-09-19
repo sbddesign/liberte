@@ -7,7 +7,7 @@ export interface OnboardingScreenData {
   text: string
   primaryButton: {
     label: string
-    action: () => void
+    action: (...args: any[]) => void
   }
   secondaryButton?: {
     label: string
