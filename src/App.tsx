@@ -1,10 +1,25 @@
-import React from 'react'
+import { useState } from 'react'
 import { BuiButtonReact as BuiButton } from '@sbddesign/bui-ui/react'
-import ArtAndLogo from './components/ArtAndLogo'
+import FreedomHome from './components/FreedomHome'
 import './App.css'
-import liberteImage from '../public/liberte.png';
+const liberteImage = '/liberte.png';
 
 function App() {
+  const [currentScreen, setCurrentScreen] = useState<'home' | 'freedom'>('home')
+
+  const handleGetStarted = () => {
+    setCurrentScreen('freedom')
+  }
+
+  const handleContinue = () => {
+    // Handle continue action - could navigate to next screen
+    console.log('Continue clicked')
+  }
+
+  if (currentScreen === 'freedom') {
+    return <FreedomHome onContinue={handleContinue} />
+  }
+
   return (
     <div className="text-center max-w-md mx-auto flex flex-col gap-6 w-full items-center justify-center h-full p-6">
       <img src={liberteImage} alt="Liberté" className="w-full h-auto mb-8" />
@@ -13,13 +28,14 @@ function App() {
           label="Get Started"
           styleType="filled"
           size="large"
-          wide
+          wide="true"
+          onClick={handleGetStarted}
         />
         <BuiButton 
           label="Restore wallet"
           styleType="outline"
           size="large"
-          wide
+          wide="true"
         />
       </div>
     </div>

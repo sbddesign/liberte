@@ -6,11 +6,16 @@
   
   /* Text colors */
   --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
+  --text-secondary: #cad5e2;
   
   /* Accent colors */
-  --accent-primary: #3b82f6;
-  --accent-secondary: #8b5cf6;
+  --accent-primary: #155dfc;
+  --accent-secondary: #ff8904;
+  
+  /* Button colors */
+  --button-filled-bg: #155dfc;
+  --button-filled-text: #ffffff;
+  --button-rounding: 24px;
   
   /* Spacing */
   --spacing-xs: 0.25rem;
