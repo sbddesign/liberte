@@ -1,22 +1,6 @@
 import React from 'react'
-import { BuiButtonReact as BuiButton } from '@sbddesign/bui-ui/react'
+import { BuiButtonReact as BuiButton, BuiOptionDotReact as BuiOptionDot } from '@sbddesign/bui-ui/react'
 const elephantImage = '/elephant.png'
-
-interface OptionDotProps {
-  active?: boolean
-}
-
-function OptionDot({ active = false }: OptionDotProps) {
-  return (
-    <div 
-      className={`w-2 h-2 rounded-2xl ${
-        active 
-          ? 'bg-[var(--accent-secondary)]' 
-          : 'bg-[var(--text-secondary)]'
-      }`}
-    />
-  )
-}
 
 interface FreedomHomeProps {
   onContinue: () => void
@@ -51,12 +35,12 @@ export default function FreedomHome({ onContinue }: FreedomHomeProps) {
       
       {/* Option Dots */}
       <div className="flex gap-4 items-start justify-start shrink-0">
-        <OptionDot active={true} />
-        <OptionDot />
-        <OptionDot />
-        <OptionDot />
-        <OptionDot />
-        <OptionDot />
+        <BuiOptionDot active={true} />
+        <BuiOptionDot />
+        <BuiOptionDot />
+        <BuiOptionDot />
+        <BuiOptionDot />
+        <BuiOptionDot />
       </div>
     </div>
   )
