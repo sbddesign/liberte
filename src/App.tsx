@@ -1,36 +1,26 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { BuiButtonReact as BuiButton } from '@sbddesign/bui-ui/react'
-import FreedomHome from './components/FreedomHome'
-import Screen2 from './components/Screen2'
-import Screen3 from './components/Screen3'
-import Screen4 from './components/Screen4'
+import OnboardingScreen from './components/OnboardingScreen'
+import { onboardingScreens } from './data/onboardingData'
 import './App.css'
 const liberteImage = '/liberte.png';
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<'home' | 'screen1' | 'screen2' | 'screen3' | 'screen4'>('home')
+  const [currentScreenIndex, setCurrentScreenIndex] = useState<number>(-1) // -1 = home screen
 
   const handleGetStarted = () => {
-    setCurrentScreen('screen1')
+    setCurrentScreenIndex(0)
   }
 
   const handleContinue = () => {
-    if (currentScreen === 'screen1') {
-      setCurrentScreen('screen2')
-    } else if (currentScreen === 'screen2') {
-      setCurrentScreen('screen3')
-    } else if (currentScreen === 'screen3') {
-      setCurrentScreen('screen4')
+    if (currentScreenIndex < onboardingScreens.length - 1) {
+      setCurrentScreenIndex(currentScreenIndex + 1)
     }
   }
 
   const handleBack = () => {
-    if (currentScreen === 'screen2') {
-      setCurrentScreen('screen1')
-    } else if (currentScreen === 'screen3') {
-      setCurrentScreen('screen2')
-    } else if (currentScreen === 'screen4') {
-      setCurrentScreen('screen3')
+    if (currentScreenIndex > 0) {
+      setCurrentScreenIndex(currentScreenIndex - 1)
     }
   }
 
@@ -39,20 +29,27 @@ function App() {
     console.log('Begin clicked - ready to start!')
   }
 
-  if (currentScreen === 'screen1') {
-    return <FreedomHome onContinue={handleContinue} />
-  }
+  // Create screen data with proper handlers
+  const currentScreenData = useMemo(() => {
+    if (currentScreenIndex === -1) return null
+    
+    const screen = onboardingScreens[currentScreenIndex]
+    return {
+      ...screen,
+      primaryButton: {
+        ...screen.primaryButton,
+        action: screen.id === 'screen4' ? handleBegin : handleContinue
+      },
+      secondaryButton: screen.secondaryButton ? {
+        ...screen.secondaryButton,
+        action: handleBack
+      } : undefined
+    }
+  }, [currentScreenIndex])
 
-  if (currentScreen === 'screen2') {
-    return <Screen2 onBack={handleBack} onContinue={handleContinue} />
-  }
-
-  if (currentScreen === 'screen3') {
-    return <Screen3 onBack={handleBack} onContinue={handleContinue} />
-  }
-
-  if (currentScreen === 'screen4') {
-    return <Screen4 onBack={handleBack} onBegin={handleBegin} />
+  // Show onboarding screen if we're in the flow
+  if (currentScreenData) {
+    return <OnboardingScreen data={currentScreenData} />
   }
 
   return (
