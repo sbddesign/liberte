@@ -8,14 +8,28 @@ export async function handleVoltageRequest(req: IncomingMessage, res: ServerResp
     timeout: parseInt(process.env.VOLTAGE_TIMEOUT || '30000')
   });
   
+  // // Bitcoin
+  // const lightningPayment = await client.createPaymentRequest({
+  //   organization_id: process.env.VOLTAGE_ORGANIZATION_ID,
+  //   environment_id: process.env.VOLTAGE_ENV_ID,
+  //   payment: {
+  //     wallet_id: process.env.VOLTAGE_STABLECOIN_WALLET_ID || "",
+  //     currency: 'btc',
+  //     amount_msats: 1000000,
+  //     payment_kind: 'bolt11',
+  //     description: 'Testing web app liberte',
+  //   },
+  // });
+
+  const ASSET = 'asset:034d8de991e76a6994753ddb4505d354873f96a1aa400a82eac1ee4fd443cfd62e';
+
   const lightningPayment = await client.createPaymentRequest({
     organization_id: process.env.VOLTAGE_ORGANIZATION_ID,
     environment_id: process.env.VOLTAGE_ENV_ID,
     payment: {
-      wallet_id: process.env.VOLTAGE_WALLET_ID || "",
-      currency: 'btc',
-      amount_msats: 150000,
-      payment_kind: 'bolt11',
+      wallet_id: process.env.VOLTAGE_STABLECOIN_WALLET_ID || "",
+      payment_kind: 'taprootasset',
+      amount: {currency: ASSET, amount: 1_000_000_000, unit: 'base units'},
       description: 'Testing web app liberte',
     },
   });
