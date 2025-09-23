@@ -8,33 +8,6 @@ export async function handleVoltageRequest(req: IncomingMessage, res: ServerResp
     timeout: parseInt(process.env.VOLTAGE_TIMEOUT || '30000')
   });
   
-  // // Bitcoin
-  // const lightningPayment = await client.createPaymentRequest({
-  //   organization_id: process.env.VOLTAGE_ORGANIZATION_ID,
-  //   environment_id: process.env.VOLTAGE_ENV_ID,
-  //   payment: {
-  //     wallet_id: process.env.VOLTAGE_STABLECOIN_WALLET_ID || "",
-  //     currency: 'btc',
-  //     amount_msats: 1000000,
-  //     payment_kind: 'bolt11',
-  //     description: 'Testing web app liberte',
-  //   },
-  // });
-
-  const ASSET = 'asset:034d8de991e76a6994753ddb4505d354873f96a1aa400a82eac1ee4fd443cfd62e';
-
-  const lightningPayment = await client.createPaymentRequest({
-    organization_id: process.env.VOLTAGE_ORGANIZATION_ID,
-    environment_id: process.env.VOLTAGE_ENV_ID,
-    payment: {
-      wallet_id: process.env.VOLTAGE_STABLECOIN_WALLET_ID || "",
-      payment_kind: 'taprootasset',
-      amount: {currency: ASSET, amount: 1_000_000_000, unit: 'base units'},
-      description: 'Testing web app liberte',
-    },
-  });
-
-  
   if (req.method === 'POST') {
     try {
       // Read request body
@@ -43,21 +16,66 @@ export async function handleVoltageRequest(req: IncomingMessage, res: ServerResp
         body += chunk.toString();
       });
       
-      req.on('end', () => {
+      req.on('end', async () => {
         console.log('Voltage API called with data:', body);
         
-        // Return 202 Accepted status
-        res.statusCode = 202;
-        res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        
-        const response = {
-          ...lightningPayment
-        };
-        
-        res.end(JSON.stringify(response));
+        try {
+          const payload = JSON.parse(body);
+          let lightningPayment;
+          
+          if (payload.currency === 'btc') {
+            // Bitcoin payment
+            lightningPayment = await client.createPaymentRequest({
+              organization_id: process.env.VOLTAGE_ORGANIZATION_ID,
+              environment_id: process.env.VOLTAGE_ENV_ID,
+              payment: {
+                wallet_id: process.env.VOLTAGE_BITCOIN_WALLET_ID || "",
+                currency: 'btc',
+                amount_msats: 1000000,
+                payment_kind: 'bolt11',
+                description: 'Testing web app liberte',
+              },
+            });
+          } else if (payload.currency === 'vc') {
+            // Stablecoin payment
+            const ASSET = 'asset:034d8de991e76a6994753ddb4505d354873f96a1aa400a82eac1ee4fd443cfd62e';
+            
+            lightningPayment = await client.createPaymentRequest({
+              organization_id: process.env.VOLTAGE_ORGANIZATION_ID,
+              environment_id: process.env.VOLTAGE_ENV_ID,
+              payment: {
+                wallet_id: process.env.VOLTAGE_STABLECOIN_WALLET_ID || "",
+                payment_kind: 'taprootasset',
+                amount: {currency: ASSET, amount: 1_000_000_000, unit: 'base units'},
+                description: 'Testing web app liberte',
+              },
+            });
+          } else {
+            throw new Error(`Unsupported currency: ${payload.currency}`);
+          }
+          
+          // Return 202 Accepted status
+          res.statusCode = 202;
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Access-Control-Allow-Origin', '*');
+          res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+          res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+          
+          const response = {
+            ...lightningPayment
+          };
+          
+          res.end(JSON.stringify(response));
+        } catch (parseError) {
+          console.error('Error processing payment request:', parseError);
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Access-Control-Allow-Origin', '*');
+          res.end(JSON.stringify({ 
+            error: 'Bad request',
+            message: parseError instanceof Error ? parseError.message : 'Invalid request format'
+          }));
+        }
       });
     } catch (error) {
       console.error('Error handling voltage request:', error);
