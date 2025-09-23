@@ -8,12 +8,17 @@ export async function handleVoltageRequest(req: IncomingMessage, res: ServerResp
     timeout: parseInt(process.env.VOLTAGE_TIMEOUT || '30000')
   });
   
-  // Get all wallets in an organization
-  const wallets = await client.getWallets({
+  const lightningPayment = await client.createPaymentRequest({
     organization_id: process.env.VOLTAGE_ORGANIZATION_ID,
+    environment_id: process.env.VOLTAGE_ENV_ID,
+    payment: {
+      wallet_id: process.env.VOLTAGE_WALLET_ID || "",
+      currency: 'btc',
+      amount_msats: 150000,
+      payment_kind: 'bolt11',
+      description: 'Testing web app liberte',
+    },
   });
-
-  console.log('Wallets:', wallets);
 
   
   if (req.method === 'POST') {
@@ -35,10 +40,7 @@ export async function handleVoltageRequest(req: IncomingMessage, res: ServerResp
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
         
         const response = {
-          message: 'Voltage request received and accepted',
-          timestamp: new Date().toISOString(),
-          status: 'accepted',
-          wallets: wallets
+          ...lightningPayment
         };
         
         res.end(JSON.stringify(response));

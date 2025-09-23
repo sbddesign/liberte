@@ -20,6 +20,8 @@ export default defineConfig(({ mode }) => {
           process.env.VOLTAGE_BASE_URL = env.VOLTAGE_BASE_URL
           process.env.VOLTAGE_TIMEOUT = env.VOLTAGE_TIMEOUT
           process.env.VOLTAGE_ORGANIZATION_ID = env.VOLTAGE_ORGANIZATION_ID
+          process.env.VOLTAGE_ENV_ID = env.VOLTAGE_ENV_ID
+          process.env.VOLTAGE_WALLET_ID = env.VOLTAGE_WALLET_ID
           
           server.middlewares.use('/api/voltage', handleVoltageRequest);
         }
