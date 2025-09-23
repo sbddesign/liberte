@@ -1,6 +1,21 @@
 import { IncomingMessage, ServerResponse } from 'http';
+import { VoltageClient } from 'voltage-api-sdk';
 
-export function handleVoltageRequest(req: IncomingMessage, res: ServerResponse, next: () => void) {
+export async function handleVoltageRequest(req: IncomingMessage, res: ServerResponse, next: () => void) {
+  const client = new VoltageClient({
+    apiKey: process.env.VOLTAGE_API_KEY,
+    baseUrl: process.env.VOLTAGE_BASE_URL || 'https://voltageapi.com/v1',
+    timeout: parseInt(process.env.VOLTAGE_TIMEOUT || '30000')
+  });
+  
+  // Get all wallets in an organization
+  const wallets = await client.getWallets({
+    organization_id: process.env.VOLTAGE_ORGANIZATION_ID,
+  });
+
+  console.log('Wallets:', wallets);
+
+  
   if (req.method === 'POST') {
     try {
       // Read request body
@@ -22,7 +37,8 @@ export function handleVoltageRequest(req: IncomingMessage, res: ServerResponse, 
         const response = {
           message: 'Voltage request received and accepted',
           timestamp: new Date().toISOString(),
-          status: 'accepted'
+          status: 'accepted',
+          wallets: wallets
         };
         
         res.end(JSON.stringify(response));
