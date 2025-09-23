@@ -21,24 +21,35 @@ export async function handleVoltageRequest(req: IncomingMessage, res: ServerResp
         
         try {
           const payload = JSON.parse(body);
+          
+          // Validate required fields
+          if (!payload.currency) {
+            throw new Error('Currency is required');
+          }
+          if (payload.amount === undefined || payload.amount === null) {
+            throw new Error('Amount is required');
+          }
+          
           let lightningPayment;
           
           if (payload.currency === 'btc') {
-            // Bitcoin payment
+            // Bitcoin payment - convert sats to msats (multiply by 1000)
+            const amountMsats = payload.amount * 1000;
             lightningPayment = await client.createPaymentRequest({
               organization_id: process.env.VOLTAGE_ORGANIZATION_ID,
               environment_id: process.env.VOLTAGE_ENV_ID,
               payment: {
                 wallet_id: process.env.VOLTAGE_BITCOIN_WALLET_ID || "",
                 currency: 'btc',
-                amount_msats: 1000000,
+                amount_msats: amountMsats,
                 payment_kind: 'bolt11',
-                description: 'Testing web app liberte',
+                description: payload.description || 'Testing web app liberte',
               },
             });
           } else if (payload.currency === 'vc') {
-            // Stablecoin payment
+            // Stablecoin payment - amount with 6 zeros added
             const ASSET = 'asset:034d8de991e76a6994753ddb4505d354873f96a1aa400a82eac1ee4fd443cfd62e';
+            const amountWithZeros = payload.amount * 1_000_000;
             
             lightningPayment = await client.createPaymentRequest({
               organization_id: process.env.VOLTAGE_ORGANIZATION_ID,
@@ -46,8 +57,8 @@ export async function handleVoltageRequest(req: IncomingMessage, res: ServerResp
               payment: {
                 wallet_id: process.env.VOLTAGE_STABLECOIN_WALLET_ID || "",
                 payment_kind: 'taprootasset',
-                amount: {currency: ASSET, amount: 1_000_000_000, unit: 'base units'},
-                description: 'Testing web app liberte',
+                amount: {currency: ASSET, amount: amountWithZeros, unit: 'base units'},
+                description: payload.description || 'Testing web app liberte',
               },
             });
           } else {
