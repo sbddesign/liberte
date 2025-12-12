@@ -42,12 +42,9 @@ export default function FinalScreen({ onBack, onBegin, activeDotIndex, totalDots
           <BuiInput
             placeholder="your name"
             value={name}
-            onChange={handleNameChange}
-            onValueChange={handleNameChange}
             onInput={(e: any) => handleNameChange(e.target.value)}
             size="large"
             label="Your Name"
-            wide="true"
           />
         </div>
         
@@ -77,7 +74,7 @@ export default function FinalScreen({ onBack, onBegin, activeDotIndex, totalDots
           styleType="filled"
           size="large"
           onClick={() => onBegin(name.trim())}
-          disabled={!name.trim()}
+          disabled={!name.trim() ? "true" : "false"}
         />
       </div>
       
@@ -86,7 +83,7 @@ export default function FinalScreen({ onBack, onBegin, activeDotIndex, totalDots
         {Array.from({ length: totalDots }, (_, index) => (
           <BuiOptionDot 
             key={index} 
-            active={index === activeDotIndex} 
+            active={index === activeDotIndex ? "true" : "false"} 
           />
         ))}
       </div>

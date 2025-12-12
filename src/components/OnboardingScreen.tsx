@@ -1,4 +1,3 @@
-import React from 'react'
 import { BuiButtonReact as BuiButton, BuiOptionDotReact as BuiOptionDot } from '@sbddesign/bui-ui/react'
 
 export interface OnboardingScreenData {
@@ -61,7 +60,7 @@ export default function OnboardingScreen({ data }: OnboardingScreenProps) {
         {Array.from({ length: data.totalDots }, (_, index) => (
           <BuiOptionDot 
             key={index} 
-            active={index === data.activeDotIndex} 
+            active={index === data.activeDotIndex ? "true" : "false"} 
           />
         ))}
       </div>

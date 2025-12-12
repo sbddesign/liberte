@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { BuiInputReact as BuiInput, BuiButtonReact as BuiButton } from '@sbddesign/bui-ui/react'
 import { NewInvoicePayload } from '../types'
 
@@ -9,7 +9,7 @@ interface NewInvoicePageProps {
   onCancel: () => void
 }
 
-export default function NewInvoicePage({ onCreateInvoice, onCancel }: NewInvoicePageProps) {
+export default function NewInvoicePage({ onCreateInvoice }: NewInvoicePageProps) {
   const clientNameRef = useRef<BuiInputElement | null>(null)
   const amountRef = useRef<BuiInputElement | null>(null)
   const dateDueRef = useRef<BuiInputElement | null>(null)
@@ -69,7 +69,7 @@ export default function NewInvoicePage({ onCreateInvoice, onCancel }: NewInvoice
           ref={clientNameRef as any}
           size="large"
           placeholder="Widge Corp"
-          showLabel={false as any}
+          showLabel="false"
         />
 
         <div className="text-white text-base font-normal leading-normal mt-6">
@@ -79,7 +79,7 @@ export default function NewInvoicePage({ onCreateInvoice, onCancel }: NewInvoice
           ref={amountRef as any}
           size="large"
           placeholder="1000"
-          showLabel={false as any}
+          showLabel="false"
         />
 
         <div className="text-white text-base font-normal leading-normal mt-6">
@@ -89,7 +89,7 @@ export default function NewInvoicePage({ onCreateInvoice, onCancel }: NewInvoice
           ref={dateDueRef as any}
           size="large"
           placeholder="1000"
-          showLabel={false as any}
+          showLabel="false"
         />
 
         <div className="text-white text-base font-normal leading-normal mt-6">
@@ -99,7 +99,7 @@ export default function NewInvoicePage({ onCreateInvoice, onCancel }: NewInvoice
           ref={descriptionRef as any}
           size="large"
           placeholder="1000"
-          showLabel={false as any}
+          showLabel="false"
         />
 
         {error && (
@@ -111,7 +111,7 @@ export default function NewInvoicePage({ onCreateInvoice, onCancel }: NewInvoice
             label="Create Invoice"
             styleType="outline"
             size="large"
-            wide
+            wide="true"
             onClick={handleSubmit}
           />
         </div>

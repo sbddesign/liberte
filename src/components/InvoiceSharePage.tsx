@@ -1,4 +1,3 @@
-import React from 'react'
 import { BuiButtonReact as BuiButton, BuiMoneyValueReact as BuiMoneyValue } from '@sbddesign/bui-ui/react'
 import { Invoice } from '../types'
 
@@ -36,7 +35,7 @@ export default function InvoiceSharePage({ invoice, onBack }: InvoiceSharePagePr
 
         <div className="text-white text-base mt-6">Amount</div>
         <div className="flex items-center gap-2">
-          <BuiMoneyValue amount={invoice.amountUsd} symbol="$" showEstimate={false} textSize="4xl" />
+          <BuiMoneyValue amount={String(invoice.amountUsd)} symbol="$" showEstimate="false" textSize="4xl" />
         </div>
 
         <div className="text-white text-base mt-6">Share Link</div>

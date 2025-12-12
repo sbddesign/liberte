@@ -89,7 +89,7 @@ export default function SliderScreen({ onBack, onBegin, onBitcoinPercentageChang
         {Array.from({ length: totalDots }, (_, index) => (
           <BuiOptionDot 
             key={index} 
-            active={index === activeDotIndex} 
+            active={index === activeDotIndex ? "true" : "false"} 
           />
         ))}
       </div>
