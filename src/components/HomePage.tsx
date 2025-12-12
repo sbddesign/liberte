@@ -1,5 +1,4 @@
-import React from 'react'
-import { BuiButtonReact as BuiButton, BuiMoneyValueReact as BuiMoneyValue, BuiBitcoinValueReact as BuiBitcoinValue } from '@sbddesign/bui-ui/react'
+import { BuiButtonReact as BuiButton, BuiMoneyValueReact as BuiMoneyValue } from '@sbddesign/bui-ui/react'
 
 interface HomePageProps {
   username: string
@@ -8,7 +7,7 @@ interface HomePageProps {
   onNewInvoice?: () => void
 }
 
-export default function HomePage({ username, bitcoinPercentage, hasInvoices, onNewInvoice }: HomePageProps) {
+export default function HomePage({ hasInvoices, onNewInvoice }: HomePageProps) {
   return (
     <div 
       className="bg-[var(--background-primary)] flex flex-col items-start justify-start p-9 gap-9 h-full"
@@ -41,7 +40,7 @@ export default function HomePage({ username, bitcoinPercentage, hasInvoices, onN
               <BuiMoneyValue 
                 amount="0" 
                 symbol="$" 
-                showEstimate={false} 
+                showEstimate="false" 
                 textSize="5xl" 
               />
             </div>
@@ -57,14 +56,14 @@ export default function HomePage({ username, bitcoinPercentage, hasInvoices, onN
             label="New Invoice"
             styleType="outline"
             size="large"
-            wide
+            wide="true"
             onClick={onNewInvoice}
           />
           <BuiButton 
             label="My Wallet"
             styleType="outline"
             size="large"
-            wide
+            wide="true"
           />
         </div>
       </div>
@@ -112,7 +111,7 @@ export default function HomePage({ username, bitcoinPercentage, hasInvoices, onN
             label="Create First Invoice"
             styleType="filled"
             size="large"
-            wide
+            wide="true"
             onClick={onNewInvoice}
           />
         </div>
